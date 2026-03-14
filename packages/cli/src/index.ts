@@ -41,7 +41,7 @@ import { consoleCommand } from "./commands/console.js";
 import { errorsCommand } from "./commands/errors.js";
 import { traceCommand } from "./commands/trace.js";
 import { fetchCommand } from "./commands/fetch.js";
-import { recipeCommand } from "./commands/recipe.js";
+import { siteCommand } from "./commands/site.js";
 
 const VERSION = "0.3.0";
 
@@ -100,11 +100,11 @@ bb-browser - AI Agent 浏览器自动化工具
   trace stop        停止录制，输出事件列表
   trace status      查看录制状态
   fetch <url>       在浏览器上下文中 fetch（自动同源路由，带登录态）
-  recipe            管理和运行社区/私有 fetch 食谱
-  recipe list       列出所有可用 recipe
-  recipe search <q> 搜索 recipe
-  recipe run <name> 运行 recipe
-  recipe update     更新社区 recipe 库
+  site              网站 CLI 化 — 管理和运行 site adapter
+  site list         列出所有可用 adapter
+  site search <q>   搜索 adapter
+  site <name>       运行 adapter（如 site reddit/thread <url>）
+  site update       更新社区 adapter 库
 
 选项：
   --json          以 JSON 格式输出
@@ -586,8 +586,8 @@ async function main(): Promise<void> {
         break;
       }
 
-      case "recipe": {
-        await recipeCommand(parsed.args, { json: parsed.flags.json });
+      case "site": {
+        await siteCommand(parsed.args, { json: parsed.flags.json });
         break;
       }
 
