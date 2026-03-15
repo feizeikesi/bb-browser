@@ -49,6 +49,27 @@ export async function isDaemonRunning(): Promise<boolean> {
 }
 
 /**
+ * 检查 Chrome 扩展是否已连接
+ */
+async function isExtensionConnected(): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+    const response = await fetch(`${DAEMON_BASE_URL}/status`, {
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+    if (!response.ok) return false;
+    const data = await response.json();
+    return !!data.extensionConnected;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * 等待 Daemon 就绪
  */
 async function waitForDaemon(timeoutMs: number): Promise<boolean> {
@@ -99,6 +120,13 @@ export async function ensureDaemonRunning(): Promise<void> {
     throw new Error(
       "无法启动 Daemon。请手动运行 bb-browser daemon 或 bb-daemon 启动服务"
     );
+  }
+
+  // 等待 Chrome 扩展连接（最多 10 秒）
+  const extStart = Date.now();
+  while (Date.now() - extStart < 10000) {
+    if (await isExtensionConnected()) return;
+    await new Promise((r) => setTimeout(r, POLL_INTERVAL));
   }
 }
 
