@@ -10,18 +10,17 @@
   "main": "./dist/cli.js",
   "files": [
     "dist",
-    "extension",
+    "packages/shared/buildDomTree.js",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "turbo run build && pnpm build:release",
-    "build:release": "tsup && pnpm build:extension",
-    "build:extension": "rm -rf extension && cp -r packages/extension/dist extension",
+    "build:release": "tsup",
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "clean": "turbo run clean && rm -rf node_modules dist extension",
+    "clean": "turbo run clean && rm -rf node_modules dist",
     "prepare": "husky",
     "prepublishOnly": "pnpm build:release"
   },
